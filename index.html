@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Review Feedback</title>
+</head>
+
+<body style="font-family: Arial; text-align: center; padding: 40px;">
+
+  <h2>How was your experience?</h2>
+
+  <!-- GREAT -->
+  <button onclick="window.location.href='https://google.com'" 
+          style="padding: 12px 20px; margin: 10px;">
+    😊 It was great
+  </button>
+
+  <!-- OKAY -->
+  <button type="button" onclick="showFeedback()" 
+          style="padding: 12px 20px; margin: 10px;">
+    😐 It was okay
+  </button>
+
+  <!-- NOT GOOD -->
+  <button type="button" onclick="showFeedback()" 
+          style="padding: 12px 20px; margin: 10px;">
+    😞 It was not good
+  </button>
+
+  <!-- FEEDBACK BOX -->
+  <div id="feedbackBox" style="display:none; margin-top:20px;">
+    
+    <p>We’re sorry to hear that. Please tell us what went wrong:</p>
+
+    <textarea id="feedback" 
+              placeholder="Type your feedback here..." 
+              style="width:80%; height:100px; padding:10px;"></textarea>
+
+    <br><br>
+
+    <button type="button" onclick="submitFeedback()" 
+            style="padding: 10px 20px;">
+      Submit Feedback
+    </button>
+
+  </div>
+
+  <script>
+    function showFeedback() {
+      document.getElementById("feedbackBox").style.display = "block";
+    }
+
+    function getGuestId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("guestId");
+    }
+
+    function submitFeedback() {
+      var message = document.getElementById("feedback").value;
+      var guestId = getGuestId();
+
+      if (!message) {
+        alert("Please enter feedback");
+        return;
+      }
+fetch("https://communicatory-precipitously-annika.ngrok-free.dev/webhook/review-feedback", {        
+         method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          feedback: message,
+          guestId: guestId
+        })
+      })
+      .then(() => {
+        alert("Thank you for your feedback!");
+      })
+      .catch(() => {
+        alert("Error sending feedback");
+      });
+    }
+  </script>
+
+</body>
+</html>
